@@ -35,9 +35,11 @@ fn main() -> Result<(), hound::Error> {
         _ => return Err(hound::Error::Unsupported),
     }
 
-    let resampled_buffer = fft_upsample(&data, (data.len()/44100)*48000, spec.channels as usize);
+    let upsample_length = (data.len() as f32 / 44100.0) * 48000.0;
 
-    let mut writer = WavWriter::create("test2.wav", spec)?;
+    let resampled_buffer = fft_upsample(&data, upsample_length.round() as usize, spec.channels as usize);
+
+    let mut writer = WavWriter::create("test3.wav", spec)?;
 
     for t in 0..resampled_buffer.len() {
         let sample = resampled_buffer[t];
